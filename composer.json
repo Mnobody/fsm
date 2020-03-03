@@ -1,0 +1,25 @@
+{
+    "name": "mnobody/fsm",
+    "description": "Finite State Machine",
+    "keywords": [
+        "state machine",
+        "finite state machine",
+        "process",
+        "business process",
+        "workflow",
+        "bpmn"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": { "Fsm\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Tests\\": "tests/" }
+    },
+    "require": {
+        "php": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    }
+}
