@@ -2,8 +2,8 @@
 
 namespace Fsm\Machine\Transition;
 
-use Fsm\Machine\Transition\Callback\AfterCallbackInterface;
-use Fsm\Machine\Transition\Callback\BeforeCallbackInterface;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+use Fsm\Machine\Transition\Callback\CallbackInterface;
 
 final class Transition implements TransitionInterface
 {
@@ -13,18 +13,17 @@ final class Transition implements TransitionInterface
 
     private string $to;
 
-    private ?BeforeCallbackInterface $beforeCallback = null;
+    private ?GuardInterface $guard = null;
 
-    private ?AfterCallbackInterface $afterCallback = null;
+    private ?CallbackInterface $callback = null;
 
-    public function __construct(string $name, string $from, string $to,
-                                ?BeforeCallbackInterface $beforeCallback = null, ?AfterCallbackInterface $afterCallback = null)
+    public function __construct(string $name, string $from, string $to, GuardInterface $guard = null, CallbackInterface $callback = null)
     {
         $this->name = $name;
         $this->from = $from;
         $this->to = $to;
-        $this->beforeCallback = $beforeCallback;
-        $this->afterCallback = $afterCallback;
+        $this->guard = $guard;
+        $this->callback = $callback;
     }
 
     public function getName(): string
@@ -42,23 +41,23 @@ final class Transition implements TransitionInterface
         return $this->to;
     }
 
-    public function hasBeforeTransitionCallback(): bool
+    public function hasGuard(): bool
     {
-        return !is_null($this->beforeCallback);
+        return !is_null($this->guard);
     }
 
-    public function getBeforeTransitionCallback(): ?BeforeCallbackInterface
+    public function getGuard(): ?GuardInterface
     {
-        return $this->beforeCallback;
+        return $this->guard;
     }
 
-    public function hasAfterTransitionCallback(): bool
+    public function hasCallback(): bool
     {
-        return !is_null($this->afterCallback);
+        return !is_null($this->callback);
     }
 
-    public function getAfterTransitionCallback(): ?AfterCallbackInterface
+    public function getCallback(): ?CallbackInterface
     {
-        return $this->afterCallback;
+        return $this->callback;
     }
 }

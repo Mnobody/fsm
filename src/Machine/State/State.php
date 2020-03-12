@@ -16,7 +16,7 @@ final class State implements StateInterface
 
     private ?PropertyCollectionInterface $properties = null;
 
-    public function __construct(string $name, string $type, ?PropertyCollectionInterface $properties = null)
+    public function __construct(string $name, string $type, PropertyCollectionInterface $properties = null)
     {
         $this->name = $name;
         $this->type = $type;

@@ -9,18 +9,17 @@ use Fsm\Machine\StateMachineInterface;
 use Fsm\Exception\StateMissingException;
 use Fsm\Exception\TransitionMissingException;
 use Fsm\Collection\Property\PropertyCollection;
-use Fsm\Machine\Transition\Callback\AfterCallbackInterface;
-use Fsm\Machine\Transition\Callback\BeforeCallbackInterface;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+use Fsm\Machine\Transition\Callback\CallbackInterface;
 
 class BuilderTest extends TestCase
 {
     public function testInitializationWithRequiredParams()
     {
-        $machine = (new Facade())->machine(
+        $machine = (new Facade)->machine(
             new Stateful,
             [
-                ['name' => 'a', 'type' => State::TYPE_INITIAL],
-                ['name' => 'b', 'type' => State::TYPE_FINAL],
+                ['name' => 'a', 'type' => State::TYPE_INITIAL]
             ],
             [['name' => 'a-to-b', 'from' => 'a', 'to' => 'b']]
         );
@@ -30,7 +29,7 @@ class BuilderTest extends TestCase
 
     public function testInitializationWithOptionalParamsAsNulls()
     {
-        $machine = (new Facade())->machine(
+        $machine = (new Facade)->machine(
             new Stateful,
             [
                 ['name' => 'a', 'type' => State::TYPE_INITIAL, 'properties' => null],
@@ -38,8 +37,8 @@ class BuilderTest extends TestCase
                 ['name' => 'c', 'type' => State::TYPE_FINAL, 'properties' => null],
             ],
             [
-                ['name' => 'a-to-b', 'from' => 'a', 'to' => 'b', 'beforeCallback' => null, 'afterCallback' => null],
-                ['name' => 'b-to-c', 'from' => 'b', 'to' => 'c', 'beforeCallback' => null, 'afterCallback' => null],
+                ['name' => 'a-to-b', 'from' => 'a', 'to' => 'b', 'guard' => null, 'callback' => null],
+                ['name' => 'b-to-c', 'from' => 'b', 'to' => 'c', 'guard' => null, 'callback' => null],
             ]
         );
 
@@ -48,15 +47,15 @@ class BuilderTest extends TestCase
 
     public function testInitializationWithAllParams()
     {
-        $beforeCallback = $this->getMockBuilder(BeforeCallbackInterface::class)
+        $guard = $this->getMockBuilder(GuardInterface::class)
             ->setMockClassName('BeforeCallback')
             ->getMock();
 
-        $afterCallback = $this->getMockBuilder(AfterCallbackInterface::class)
+        $callback = $this->getMockBuilder(CallbackInterface::class)
             ->setMockClassName('AfterCallback')
             ->getMock();
 
-        $machine = (new Facade())->machine(
+        $machine = (new Facade)->machine(
             new Stateful,
             [
                 ['name' => 'a', 'type' => State::TYPE_INITIAL, 'properties' => new PropertyCollection],
@@ -64,8 +63,8 @@ class BuilderTest extends TestCase
                 ['name' => 'c', 'type' => State::TYPE_FINAL, 'properties' => new PropertyCollection(['testKey2' => new \stdClass()])],
             ],
             [
-                ['name' => 'a-to-b', 'from' => 'a', 'to' => 'b', 'beforeCallback' => $beforeCallback, 'afterCallback' => $afterCallback],
-                ['name' => 'b-to-c', 'from' => 'b', 'to' => 'c', 'beforeCallback' => $beforeCallback, 'afterCallback' => $afterCallback],
+                ['name' => 'a-to-b', 'from' => 'a', 'to' => 'b', 'guard' => $guard, 'callback' => $callback],
+                ['name' => 'b-to-c', 'from' => 'b', 'to' => 'c', 'guard' => $guard, 'callback' => $callback],
             ]
         );
 
@@ -77,7 +76,7 @@ class BuilderTest extends TestCase
         $this->expectException(StateMissingException::class);
         $this->expectExceptionMessage('Initial state is missing.');
 
-        (new Facade())->machine(new Stateful, [['name' => 'b', 'type' => State::TYPE_FINAL]], [['name' => 'a-to-b', 'from' => 'a', 'to' => 'b']]);
+        (new Facade)->machine(new Stateful, [['name' => 'b', 'type' => State::TYPE_FINAL]], [['name' => 'a-to-b', 'from' => 'a', 'to' => 'b']]);
     }
 
     public function testTransitionMissingException()
@@ -85,9 +84,9 @@ class BuilderTest extends TestCase
         $this->expectException(TransitionMissingException::class);
         $this->expectExceptionMessage('Transitions list cannot be empty.');
 
-        (new Facade())->machine(
+        (new Facade)->machine(
             new Stateful,
-            [['name' => 'a', 'type' => State::TYPE_INITIAL], ['name' => 'b', 'type' => State::TYPE_FINAL]],
+            [['name' => 'a', 'type' => State::TYPE_INITIAL]],
             [] // empty transition array
         );
     }

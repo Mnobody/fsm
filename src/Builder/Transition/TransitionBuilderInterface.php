@@ -3,8 +3,8 @@
 namespace Fsm\Builder\Transition;
 
 use Fsm\Machine\Transition\TransitionInterface;
-use Fsm\Machine\Transition\Callback\AfterCallbackInterface;
-use Fsm\Machine\Transition\Callback\BeforeCallbackInterface;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+use Fsm\Machine\Transition\Callback\CallbackInterface;
 
 interface TransitionBuilderInterface
 {
@@ -16,7 +16,7 @@ interface TransitionBuilderInterface
 
     function setTo(string $to): TransitionBuilderInterface;
 
-    function setBeforeTransitionCallback(?BeforeCallbackInterface $callback = null): TransitionBuilderInterface;
+    function setGuard(GuardInterface $callback = null): TransitionBuilderInterface;
 
-    function setAfterTransitionCallback(?AfterCallbackInterface $callback = null): TransitionBuilderInterface;
+    function setCallback(CallbackInterface $callback = null): TransitionBuilderInterface;
 }

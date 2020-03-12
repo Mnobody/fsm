@@ -4,8 +4,8 @@ namespace Fsm\Builder\Transition;
 
 use Fsm\Machine\Transition\Transition;
 use Fsm\Machine\Transition\TransitionInterface;
-use Fsm\Machine\Transition\Callback\AfterCallbackInterface;
-use Fsm\Machine\Transition\Callback\BeforeCallbackInterface;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+use Fsm\Machine\Transition\Callback\CallbackInterface;
 
 final class TransitionBuilder implements TransitionBuilderInterface
 {
@@ -15,9 +15,9 @@ final class TransitionBuilder implements TransitionBuilderInterface
 
     private string $to;
 
-    private ?BeforeCallbackInterface $beforeCallback = null;
+    private ?GuardInterface $guard = null;
 
-    private ?AfterCallbackInterface $afterCallback = null;
+    private ?CallbackInterface $callback = null;
 
     public function setName(string $name): TransitionBuilderInterface
     {
@@ -40,22 +40,22 @@ final class TransitionBuilder implements TransitionBuilderInterface
         return $this;
     }
 
-    public function setBeforeTransitionCallback(?BeforeCallbackInterface $callback = null): TransitionBuilderInterface
+    public function setGuard(GuardInterface $guard = null): TransitionBuilderInterface
     {
-        $this->beforeCallback = $callback;
+        $this->guard = $guard;
 
         return $this;
     }
 
-    public function setAfterTransitionCallback(?AfterCallbackInterface $callback = null): TransitionBuilderInterface
+    public function setCallback(CallbackInterface $callback = null): TransitionBuilderInterface
     {
-        $this->afterCallback = $callback;
+        $this->callback = $callback;
 
         return $this;
     }
 
     public function build(): TransitionInterface
     {
-        return new Transition($this->name, $this->from, $this->to, $this->beforeCallback, $this->afterCallback);
+        return new Transition($this->name, $this->from, $this->to, $this->guard, $this->callback);
     }
 }

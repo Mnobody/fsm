@@ -8,6 +8,7 @@ use Fsm\Machine\State\StateInterface;
 use Fsm\Machine\StateMachineInterface;
 use Fsm\Exception\StateMissingException;
 use Fsm\Collection\State\StateCollection;
+use Fsm\Exception\TransitionMissingException;
 use Fsm\Machine\Transition\TransitionInterface;
 use Fsm\Collection\Transition\TransitionCollection;
 
@@ -22,6 +23,7 @@ final class StateMachineBuilder implements StateMachineBuilderInterface
     /**
      * @return StateMachineInterface
      * @throws StateMissingException
+     * @throws TransitionMissingException
      */
     public function build(): StateMachineInterface
     {

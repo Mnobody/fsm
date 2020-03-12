@@ -15,5 +15,5 @@ interface StateBuilderInterface
 
     function setName(string $name): StateBuilderInterface;
 
-    function setProperties(?PropertyCollection $properties = null): StateBuilderInterface;
+    function setProperties(PropertyCollection $properties = null): StateBuilderInterface;
 }

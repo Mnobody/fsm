@@ -17,7 +17,7 @@ class TransitionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->twoStepMachine = (new Facade())->machine(
+        $this->twoStepMachine = (new Facade)->machine(
             new Stateful,
             [
                 ['name' => 'a', 'type' => State::TYPE_INITIAL],
@@ -26,7 +26,7 @@ class TransitionTest extends TestCase
             [['name' => 'a-to-b', 'from' => 'a', 'to' => 'b']]
         );
 
-        $this->threeStepMachine = (new Facade())->machine(
+        $this->threeStepMachine = (new Facade)->machine(
             new Stateful,
             [
                 ['name' => 'a', 'type' => State::TYPE_INITIAL],

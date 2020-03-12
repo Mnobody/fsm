@@ -34,7 +34,7 @@ final class StateBuilder implements StateBuilderInterface
         return $this;
     }
 
-    public function setProperties(?PropertyCollection $properties = null): StateBuilderInterface
+    public function setProperties(PropertyCollection $properties = null): StateBuilderInterface
     {
         $this->properties = $properties;
 

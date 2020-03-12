@@ -12,11 +12,9 @@ use Fsm\Facade;
 use Fsm\Machine\State\State;
 use Fsm\Machine\StatefulInterface;
 use Fsm\Machine\State\StateInterface;
-use Fsm\Collection\Property\PropertyCollection;
-use Fsm\Machine\Transition\Callback\BeforeCallbackInterface;
-use Fsm\Machine\Transition\Callback\CallbackResultShouldProceed;
-use Fsm\Machine\Transition\Callback\CallbackResultStopProceeding;
-use Fsm\Machine\Transition\Callback\BeforeCallbackResultInterface;
+use Fsm\Collection\Argument\ArgumentCollection;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+use Fsm\Collection\Argument\ArgumentCollectionInterface;
 
 class Safe implements StatefulInterface
 {
@@ -39,50 +37,44 @@ class Safe implements StatefulInterface
 
     public function getCorrectCombination(): string
     {
-        return '34567898'; // safe opening combination
+        return '34567898'; // correct combination
     }
 }
 
-class CombinationChecker implements BeforeCallbackInterface
+class CombinationChecker implements GuardInterface
 {
-    public function __invoke(StatefulInterface $stateful, StateInterface $state, string $to,
-                             ?PropertyCollection $transitionProperties = null): BeforeCallbackResultInterface
+    public function pass(StatefulInterface $stateful, StateInterface $state, string $to, ArgumentCollectionInterface $arguments = null): bool
     {
-        $try = $transitionProperties->getProperty('combination');
+        $attempt = $arguments->getArgument('combination');
 
         /** @var Safe $stateful */
-        if ($stateful->getCorrectCombination() === $try) {
+        if ($stateful->getCorrectCombination() === $attempt) {
             // correct combination
-            return new CallbackResultShouldProceed();
+            return true;
         }
 
-        // incorrect combination
-        return new CallbackResultStopProceeding();
+        return false;
     }
 }
 
-$safe = new Safe();
-
 $machine = (new Facade)->machine(
-    $safe,
+    new Safe,
     [
         ['name' => 'locked', 'type' => State::TYPE_INITIAL],
         ['name' => 'unlocked', 'type' => State::TYPE_FINAL],
     ],
     [
-        ['name' => 'unlock', 'from' => 'locked', 'to' => 'unlocked', 'beforeCallback' => new CombinationChecker],
+        ['name' => 'unlock', 'from' => 'locked', 'to' => 'unlocked', 'guard' => new CombinationChecker],
     ]
 );
 
-// usage
-
 echo $machine->getCurrentState()->getName();
 
-// return true, we can apply this transition
-echo $machine->can('unlock');
-$machine->apply('unlock', new PropertyCollection(['combination' => '45645654'])); // wrong combination
+$wrong = new ArgumentCollection(['combination' => '45645654']); // wrong combination
+echo $machine->can('unlock', $wrong);
 echo $machine->getCurrentState()->getName();
 
-echo $machine->can('unlock');
-$machine->apply('unlock', new PropertyCollection(['combination' => '34567898'])); // correct combination
+$correct = new ArgumentCollection(['combination' => '34567898']); // correct combination
+echo $machine->can('unlock', $correct);
+$machine->apply('unlock', $correct);
 echo $machine->getCurrentState()->getName();
