@@ -4,11 +4,10 @@ namespace Fsm\Machine;
 
 use Fsm\Machine\State\StateInterface;
 use Fsm\Exception\StateMissingException;
-use Fsm\Exception\TransitionMissingException;
 use Fsm\Machine\Transition\TransitionInterface;
-use Fsm\Collection\Property\PropertyCollection;
 use Fsm\Exception\ImpossibleTransitionException;
 use Fsm\Collection\State\StateCollectionInterface;
+use Fsm\Collection\Argument\ArgumentCollectionInterface;
 use Fsm\Collection\Transition\TransitionCollectionInterface;
 
 final class StateMachine implements StateMachineInterface
@@ -31,38 +30,43 @@ final class StateMachine implements StateMachineInterface
         return $this->stateful->hasState() ? $this->stateful->getState() : $this->states->getInitial();
     }
 
-    public function can(string $transitionName): bool
-    {
-        return $this->isTransitionStartsFromCurrentState($transitionName);
-    }
-
-    /**
-     * @param string $transitionName
-     * @return bool
-     * @throws TransitionMissingException
-     */
-    private function isTransitionStartsFromCurrentState(string $transitionName): bool
+    public function can(string $transitionName, ArgumentCollectionInterface $arguments = null): bool
     {
         $transition = $this->transitions->getTransition($transitionName);
 
+        return (
+            $this->isTransitionStartsFromCurrentState($transition)
+            &&
+            $this->handleGuard($transition, $arguments)
+        );
+    }
+
+    private function isTransitionStartsFromCurrentState(TransitionInterface $transition): bool
+    {
         return ($transition->getFrom() === $this->getCurrentState()->getName());
     }
 
-    public function apply(string $transitionName, ?PropertyCollection $properties = null)
+    private function handleGuard(TransitionInterface $transition, ArgumentCollectionInterface $arguments = null): bool
     {
-        if (!$this->can($transitionName)) {
+        if (!$transition->hasGuard()) {
+            return true;
+        }
+
+        $guard = $transition->getGuard();
+        return $guard->pass($this->stateful, $this->getCurrentState(), $transition->getTo(), $arguments);
+    }
+
+    public function apply(string $transitionName, ArgumentCollectionInterface $arguments = null)
+    {
+        if (!$this->can($transitionName, $arguments)) {
             throw new ImpossibleTransitionException("The transition: '$transitionName' cannot be applied.");
         }
 
         $transition = $this->transitions->getTransition($transitionName);
 
-        if (!$shouldProceed = $this->handleBeforeCallback($transition, $properties)) {
-            return;
-        }
-
         $this->makeTransition($transition);
 
-        $this->handleAfterCallback($transition);
+        $this->handleCallback($transition, $arguments);
     }
 
     /**
@@ -75,25 +79,13 @@ final class StateMachine implements StateMachineInterface
         $this->stateful->setState($state);
     }
 
-    private function handleBeforeCallback(TransitionInterface $transition, ?PropertyCollection $properties = null): bool
+    private function handleCallback(TransitionInterface $transition, ArgumentCollectionInterface $arguments = null)
     {
-        if (!$transition->hasBeforeTransitionCallback()) {
-            return true;
-        }
-
-        $beforeCallback = $transition->getBeforeTransitionCallback();
-        $result = $beforeCallback($this->stateful, $this->getCurrentState(), $transition->getTo(), $properties);
-
-        return $result->shouldProceed();
-    }
-
-    private function handleAfterCallback(TransitionInterface $transition, ?PropertyCollection $properties = null)
-    {
-        if (!$transition->hasAfterTransitionCallback()) {
+        if (!$transition->hasCallback()) {
             return;
         }
 
-        $afterCallback = $transition->getAfterTransitionCallback();
-        $afterCallback($this->stateful, $this->getCurrentState(), $transition->getTo(), $properties);
+        $callback = $transition->getCallback();
+        $callback->handle($this->stateful, $this->getCurrentState(), $transition->getTo(), $arguments);
     }
 }

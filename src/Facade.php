@@ -12,12 +12,12 @@ use Fsm\Machine\StateMachineInterface;
 use Fsm\Builder\Transition\TransitionBuilder;
 use Fsm\Collection\Property\PropertyCollection;
 use Fsm\Machine\Transition\TransitionInterface;
-use Fsm\Machine\Transition\Callback\AfterCallbackInterface;
-use Fsm\Machine\Transition\Callback\BeforeCallbackInterface;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+use Fsm\Machine\Transition\Callback\CallbackInterface;
 
 final class Facade
 {
-    public function state(string $type, string $name, ?PropertyCollection $properties = null): StateInterface
+    public function state(string $type, string $name, PropertyCollection $properties = null): StateInterface
     {
         $builder = (new StateBuilder)
             ->setName($name)
@@ -35,22 +35,20 @@ final class Facade
         }
     }
 
-    public function transition(string $name, string $from, string $to,
-                                   ?BeforeCallbackInterface $beforeCallback = null,
-                                   ?AfterCallbackInterface $afterCallback = null): TransitionInterface
+    public function transition(string $name, string $from, string $to, GuardInterface $guard = null, CallbackInterface $callback = null): TransitionInterface
     {
-        return (new TransitionBuilder())
+        return (new TransitionBuilder)
             ->setName($name)
             ->setFrom($from)
             ->setTo($to)
-            ->setBeforeTransitionCallback($beforeCallback)
-            ->setAfterTransitionCallback($afterCallback)
+            ->setGuard($guard)
+            ->setCallback($callback)
             ->build();
     }
 
     public function machine(StatefulInterface $stateful, array $states, array $transitions): StateMachineInterface
     {
-        $builder = (new StateMachineBuilder())->setStateful($stateful);
+        $builder = (new StateMachineBuilder)->setStateful($stateful);
 
         foreach ($states as $state) {
             $properties = $state['properties'] ?? null;
@@ -61,11 +59,11 @@ final class Facade
         }
 
         foreach ($transitions as $transition) {
-            $beforeCallback = $transition['beforeCallback'] ?? null;
-            $afterCallback = $transition['afterCallback'] ?? null;
+            $guard = $transition['guard'] ?? null;
+            $callback = $transition['callback'] ?? null;
 
             $builder->addTransition(
-                $this->transition($transition['name'], $transition['from'], $transition['to'], $beforeCallback, $afterCallback)
+                $this->transition($transition['name'], $transition['from'], $transition['to'], $guard, $callback)
             );
         }
 

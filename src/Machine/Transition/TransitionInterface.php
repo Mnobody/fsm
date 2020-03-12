@@ -2,8 +2,8 @@
 
 namespace Fsm\Machine\Transition;
 
-use Fsm\Machine\Transition\Callback\AfterCallbackInterface;
-use Fsm\Machine\Transition\Callback\BeforeCallbackInterface;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+use Fsm\Machine\Transition\Callback\CallbackInterface;
 
 interface TransitionInterface
 {
@@ -13,12 +13,11 @@ interface TransitionInterface
 
     function getTo(): string;
 
-    function hasBeforeTransitionCallback(): bool;
+    function hasGuard(): bool;
 
-    function getBeforeTransitionCallback(): ?BeforeCallbackInterface;
+    function getGuard(): ?GuardInterface;
 
-    function hasAfterTransitionCallback(): bool;
+    function hasCallback(): bool;
 
-    function getAfterTransitionCallback(): ?AfterCallbackInterface;
-
+    function getCallback(): ?CallbackInterface;
 }
