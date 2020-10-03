@@ -10,10 +10,10 @@ interface GuardInterface
 {
     /**
      * @param StatefulInterface $stateful
-     * @param State $state
-     * @param string $to
+     * @param State $from
+     * @param State $to
      * @param ArgumentCollection|null $arguments
      * @return bool
      */
-    function pass(StatefulInterface $stateful, State $state, string $to, ArgumentCollection $arguments = null): bool;
+    function pass(StatefulInterface $stateful, State $from, State $to, ArgumentCollection $arguments = null): bool;
 }

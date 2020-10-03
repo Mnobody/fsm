@@ -54,7 +54,7 @@ final class StateMachine
         }
 
         $guard = $transition->getGuard();
-        return $guard->pass($this->stateful, $this->getCurrentState(), $transition->getTo(), $arguments);
+        return $guard->pass($this->stateful, $this->getCurrentState(), $this->states->getState($transition->getTo()), $arguments);
     }
 
     public function apply(string $transitionName, ArgumentCollection $arguments = null)
