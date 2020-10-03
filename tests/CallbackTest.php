@@ -5,10 +5,9 @@ namespace Tests;
 use Fsm\Facade;
 use Fsm\Machine\State\State;
 use PHPUnit\Framework\TestCase;
-use Fsm\Machine\StatefulInterface;
-use Fsm\Machine\State\StateInterface;
+use Fsm\Machine\Stateful\StatefulInterface;
 use Fsm\Machine\Transition\Callback\CallbackInterface;
-use Fsm\Collection\Argument\ArgumentCollectionInterface;
+use Fsm\Collection\Argument\ArgumentCollection;
 
 class CallbackTest extends TestCase
 {
@@ -34,7 +33,7 @@ class AfterCallbackException extends \Exception {}
 
 class CallbackThrowsException implements CallbackInterface
 {
-    public function handle(StatefulInterface $stateful, StateInterface $state, string $to, ArgumentCollectionInterface $arguments = null)
+    public function handle(StatefulInterface $stateful, State $state, string $to, ArgumentCollection $arguments = null)
     {
         throw new AfterCallbackException('AfterCallback exception.');
     }

@@ -1,0 +1,16 @@
+<?php
+
+namespace Tests;
+
+use Fsm\Machine\State\State;
+use Fsm\Machine\Stateful\StatefulInterface;
+use Fsm\Collection\Argument\ArgumentCollection;
+use Fsm\Machine\Transition\Guard\GuardInterface;
+
+final class StopGuard implements GuardInterface
+{
+    public function pass(StatefulInterface $stateful, State $state, string $to, ArgumentCollection $arguments = null): bool
+    {
+        return false;
+    }
+}

@@ -4,9 +4,9 @@ namespace Fsm\Collection\Transition;
 
 use Fsm\Collection\ImmutableCollection;
 use Fsm\Exception\TransitionMissingException;
-use Fsm\Machine\Transition\TransitionInterface;
+use Fsm\Machine\Transition\Transition;
 
-final class TransitionCollection extends ImmutableCollection implements TransitionCollectionInterface
+final class TransitionCollection extends ImmutableCollection
 {
     /**
      * TransitionCollection constructor.
@@ -32,10 +32,10 @@ final class TransitionCollection extends ImmutableCollection implements Transiti
 
     /**
      * @param string $name
-     * @return TransitionInterface
+     * @return Transition
      * @throws TransitionMissingException
      */
-    public function getTransition(string $name): TransitionInterface
+    public function getTransition(string $name): Transition
     {
         if (!isset($this->items[$name])) {
             throw new TransitionMissingException("The transition: '$name' does not exists.");

@@ -2,9 +2,9 @@
 
 namespace Fsm\Machine\Transition\Callback;
 
-use Fsm\Machine\StatefulInterface;
-use Fsm\Machine\State\StateInterface;
-use Fsm\Collection\Argument\ArgumentCollectionInterface;
+use Fsm\Machine\Stateful\StatefulInterface;
+use Fsm\Machine\State\State;
+use Fsm\Collection\Argument\ArgumentCollection;
 
 interface CallbackInterface
 {
@@ -12,10 +12,10 @@ interface CallbackInterface
      * Handles callback after transition form state '$state' to state '$to'
      *
      * @param StatefulInterface $stateful
-     * @param StateInterface $state
+     * @param State $state
      * @param string $to
-     * @param ArgumentCollectionInterface|null $arguments
+     * @param ArgumentCollection|null $arguments
      * @return mixed
      */
-    function handle(StatefulInterface $stateful, StateInterface $state, string $to, ArgumentCollectionInterface $arguments = null);
+    function handle(StatefulInterface $stateful, State $state, string $to, ArgumentCollection $arguments = null);
 }

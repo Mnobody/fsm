@@ -9,8 +9,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Fsm\Facade;
 use Fsm\Machine\State\State;
-use Fsm\Machine\StatefulInterface;
-use Fsm\Machine\State\StateInterface;
+use Fsm\Machine\Stateful\StatefulInterface;
 
 class Light implements StatefulInterface
 {
@@ -22,9 +21,9 @@ class Light implements StatefulInterface
     const TRANSITION_YELLOW_TO_GREEN = 'yellow-to-green';
     const TRANSITION_GREEN_TO_RED = 'green-to-red';
 
-    private StateInterface $state;
+    private State $state;
 
-    public function setState(StateInterface $state)
+    public function setState(State $state)
     {
         $this->state = $state;
     }
@@ -34,7 +33,7 @@ class Light implements StatefulInterface
         return isset($this->state);
     }
 
-    public function getState(): StateInterface
+    public function getState(): State
     {
         return $this->state;
     }

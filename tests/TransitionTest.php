@@ -5,15 +5,15 @@ namespace Tests;
 use Fsm\Facade;
 use Fsm\Machine\State\State;
 use PHPUnit\Framework\TestCase;
-use Fsm\Machine\StateMachineInterface;
+use Fsm\Machine\StateMachine;
 use Fsm\Exception\TransitionMissingException;
 use Fsm\Exception\ImpossibleTransitionException;
 
 class TransitionTest extends TestCase
 {
-    private StateMachineInterface $twoStepMachine;
+    private StateMachine $twoStepMachine;
 
-    private StateMachineInterface $threeStepMachine;
+    private StateMachine $threeStepMachine;
 
     protected function setUp(): void
     {

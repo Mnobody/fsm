@@ -5,7 +5,7 @@ namespace Fsm\Collection\Property;
 use Fsm\Collection\ImmutableCollection;
 use Fsm\Exception\PropertyMissingException;
 
-class PropertyCollection extends ImmutableCollection implements PropertyCollectionInterface
+final class PropertyCollection extends ImmutableCollection
 {
     public function getProperty(string $property)
     {
