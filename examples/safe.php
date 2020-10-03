@@ -41,7 +41,7 @@ class Safe implements StatefulInterface
 
 class CombinationChecker implements GuardInterface
 {
-    public function pass(StatefulInterface $stateful, State $state, string $to, ArgumentCollection $arguments = null): bool
+    public function pass(StatefulInterface $stateful, State $from, State $to, ArgumentCollection $arguments = null): bool
     {
         $attempt = $arguments->getArgument('combination');
 

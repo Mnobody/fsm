@@ -9,7 +9,7 @@ use Fsm\Machine\Transition\Guard\GuardInterface;
 
 final class StopGuard implements GuardInterface
 {
-    public function pass(StatefulInterface $stateful, State $state, string $to, ArgumentCollection $arguments = null): bool
+    public function pass(StatefulInterface $stateful, State $from, State $to, ArgumentCollection $arguments = null): bool
     {
         return false;
     }
