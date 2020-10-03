@@ -2,35 +2,36 @@
 
 namespace Fsm\Machine;
 
-use Fsm\Machine\State\StateInterface;
+use Fsm\Machine\State\State;
 use Fsm\Exception\StateMissingException;
-use Fsm\Machine\Transition\TransitionInterface;
+use Fsm\Machine\Stateful\StatefulInterface;
+use Fsm\Machine\Transition\Transition;
 use Fsm\Exception\ImpossibleTransitionException;
-use Fsm\Collection\State\StateCollectionInterface;
-use Fsm\Collection\Argument\ArgumentCollectionInterface;
-use Fsm\Collection\Transition\TransitionCollectionInterface;
+use Fsm\Collection\State\StateCollection;
+use Fsm\Collection\Argument\ArgumentCollection;
+use Fsm\Collection\Transition\TransitionCollection;
 
-final class StateMachine implements StateMachineInterface
+final class StateMachine
 {
     private StatefulInterface $stateful;
 
-    private StateCollectionInterface $states;
+    private StateCollection $states;
 
-    private TransitionCollectionInterface $transitions;
+    private TransitionCollection $transitions;
 
-    public function __construct(StatefulInterface $stateful, StateCollectionInterface $states, TransitionCollectionInterface $transitions)
+    public function __construct(StatefulInterface $stateful, StateCollection $states, TransitionCollection $transitions)
     {
         $this->stateful = $stateful;
         $this->states = $states;
         $this->transitions = $transitions;
     }
 
-    public function getCurrentState(): StateInterface
+    public function getCurrentState(): State
     {
         return $this->stateful->hasState() ? $this->stateful->getState() : $this->states->getInitial();
     }
 
-    public function can(string $transitionName, ArgumentCollectionInterface $arguments = null): bool
+    public function can(string $transitionName, ArgumentCollection $arguments = null): bool
     {
         $transition = $this->transitions->getTransition($transitionName);
 
@@ -41,12 +42,12 @@ final class StateMachine implements StateMachineInterface
         );
     }
 
-    private function isTransitionStartsFromCurrentState(TransitionInterface $transition): bool
+    private function isTransitionStartsFromCurrentState(Transition $transition): bool
     {
         return ($transition->getFrom() === $this->getCurrentState()->getName());
     }
 
-    private function handleGuard(TransitionInterface $transition, ArgumentCollectionInterface $arguments = null): bool
+    private function handleGuard(Transition $transition, ArgumentCollection $arguments = null): bool
     {
         if (!$transition->hasGuard()) {
             return true;
@@ -56,7 +57,7 @@ final class StateMachine implements StateMachineInterface
         return $guard->pass($this->stateful, $this->getCurrentState(), $transition->getTo(), $arguments);
     }
 
-    public function apply(string $transitionName, ArgumentCollectionInterface $arguments = null)
+    public function apply(string $transitionName, ArgumentCollection $arguments = null)
     {
         if (!$this->can($transitionName, $arguments)) {
             throw new ImpossibleTransitionException("The transition: '$transitionName' cannot be applied.");
@@ -70,16 +71,16 @@ final class StateMachine implements StateMachineInterface
     }
 
     /**
-     * @param TransitionInterface $transition
+     * @param Transition $transition
      * @throws StateMissingException
      */
-    private function makeTransition(TransitionInterface $transition)
+    private function makeTransition(Transition $transition)
     {
         $state = $this->states->getState($transition->getTo());
         $this->stateful->setState($state);
     }
 
-    private function handleCallback(TransitionInterface $transition, ArgumentCollectionInterface $arguments = null)
+    private function handleCallback(Transition $transition, ArgumentCollection $arguments = null)
     {
         if (!$transition->hasCallback()) {
             return;

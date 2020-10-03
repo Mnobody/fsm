@@ -5,7 +5,7 @@ namespace Fsm\Collection\Argument;
 use Fsm\Collection\ImmutableCollection;
 use Fsm\Exception\ArgumentMissingException;
 
-class ArgumentCollection extends ImmutableCollection implements ArgumentCollectionInterface
+final class ArgumentCollection extends ImmutableCollection
 {
     public function getArgument(string $argument)
     {

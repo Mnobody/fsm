@@ -5,7 +5,7 @@ namespace Tests;
 use Fsm\Facade;
 use Fsm\Machine\State\State;
 use PHPUnit\Framework\TestCase;
-use Fsm\Machine\StateMachineInterface;
+use Fsm\Machine\StateMachine;
 use Fsm\Exception\StateMissingException;
 use Fsm\Exception\TransitionMissingException;
 use Fsm\Collection\Property\PropertyCollection;
@@ -24,7 +24,7 @@ class BuilderTest extends TestCase
             [['name' => 'a-to-b', 'from' => 'a', 'to' => 'b']]
         );
 
-        $this->assertInstanceOf(StateMachineInterface::class, $machine);
+        $this->assertInstanceOf(StateMachine::class, $machine);
     }
 
     public function testInitializationWithOptionalParamsAsNulls()
@@ -42,7 +42,7 @@ class BuilderTest extends TestCase
             ]
         );
 
-        $this->assertInstanceOf(StateMachineInterface::class, $machine);
+        $this->assertInstanceOf(StateMachine::class, $machine);
     }
 
     public function testInitializationWithAllParams()
@@ -68,7 +68,7 @@ class BuilderTest extends TestCase
             ]
         );
 
-        $this->assertInstanceOf(StateMachineInterface::class, $machine);
+        $this->assertInstanceOf(StateMachine::class, $machine);
     }
 
     public function testInitialStateMissingException()

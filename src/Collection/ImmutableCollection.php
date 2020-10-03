@@ -2,7 +2,7 @@
 
 namespace Fsm\Collection;
 
-class ImmutableCollection implements ImmutableCollectionInterface
+abstract class ImmutableCollection
 {
     protected array $items;
 

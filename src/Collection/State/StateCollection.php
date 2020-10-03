@@ -2,13 +2,13 @@
 
 namespace Fsm\Collection\State;
 
-use Fsm\Machine\State\StateInterface;
+use Fsm\Machine\State\State;
 use Fsm\Collection\ImmutableCollection;
 use Fsm\Exception\StateMissingException;
 
-final class StateCollection extends ImmutableCollection implements StateCollectionInterface
+final class StateCollection extends ImmutableCollection
 {
-    private StateInterface $initial;
+    private State $initial;
 
     /**
      * StateCollection constructor.
@@ -27,7 +27,7 @@ final class StateCollection extends ImmutableCollection implements StateCollecti
      */
     private function init()
     {
-        /** @var StateInterface $state */
+        /** @var State $state */
         foreach ($this->items as $state) {
             if ($state->isInitial()) {
                 $this->initial = $state;
@@ -39,17 +39,17 @@ final class StateCollection extends ImmutableCollection implements StateCollecti
         }
     }
 
-    public function getInitial(): StateInterface
+    public function getInitial(): State
     {
         return $this->initial;
     }
 
     /**
      * @param string $name
-     * @return StateInterface
+     * @return State
      * @throws StateMissingException
      */
-    public function getState(string $name): StateInterface
+    public function getState(string $name): State
     {
         if (!isset($this->items[$name])) {
             throw new StateMissingException("The state: '$name' does not exists.");

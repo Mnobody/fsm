@@ -5,7 +5,7 @@ namespace Fsm\Machine\Transition;
 use Fsm\Machine\Transition\Guard\GuardInterface;
 use Fsm\Machine\Transition\Callback\CallbackInterface;
 
-final class Transition implements TransitionInterface
+final class Transition
 {
     private string $name;
 

@@ -2,9 +2,9 @@
 
 namespace Fsm\Machine\State;
 
-use Fsm\Collection\Property\PropertyCollectionInterface;
+use Fsm\Collection\Property\PropertyCollection;
 
-final class State implements StateInterface
+final class State
 {
     const TYPE_INITIAL = 'initial';
     const TYPE_INTERMEDIATE = 'intermediate';
@@ -14,9 +14,9 @@ final class State implements StateInterface
 
     private string $type;
 
-    private ?PropertyCollectionInterface $properties = null;
+    private ?PropertyCollection $properties = null;
 
-    public function __construct(string $name, string $type, PropertyCollectionInterface $properties = null)
+    public function __construct(string $name, string $type, PropertyCollection $properties = null)
     {
         $this->name = $name;
         $this->type = $type;
@@ -38,7 +38,7 @@ final class State implements StateInterface
         return !is_null($this->properties);
     }
 
-    public function getProperties(): ?PropertyCollectionInterface
+    public function getProperties(): ?PropertyCollection
     {
         return $this->properties;
     }

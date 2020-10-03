@@ -5,14 +5,12 @@ namespace Tests;
 use Fsm\Facade;
 use Fsm\Machine\State\State;
 use PHPUnit\Framework\TestCase;
-use Fsm\Machine\StateMachineInterface;
-use Fsm\Machine\Transition\Guard\PassGuard;
-use Fsm\Machine\Transition\Guard\StopGuard;
+use Fsm\Machine\StateMachine;
 use Fsm\Collection\Property\PropertyCollection;
 
 class GuardTest extends TestCase
 {
-    private StateMachineInterface $threeStepMachine;
+    private StateMachine $threeStepMachine;
 
     protected function setUp(): void
     {

@@ -3,38 +3,37 @@
 namespace Fsm\Builder\State;
 
 use Fsm\Machine\State\State;
-use Fsm\Machine\State\StateInterface;
 use Fsm\Collection\Property\PropertyCollection;
 
-final class StateBuilder implements StateBuilderInterface
+final class StateBuilder
 {
     private string $name;
 
     private ?PropertyCollection $properties = null;
 
-    public function buildInitial(): StateInterface
+    public function buildInitial(): State
     {
         return new State($this->name, State::TYPE_INITIAL, $this->properties);
     }
 
-    public function buildIntermediate(): StateInterface
+    public function buildIntermediate(): State
     {
         return new State($this->name, State::TYPE_INTERMEDIATE, $this->properties);
     }
 
-    public function buildFinal(): StateInterface
+    public function buildFinal(): State
     {
         return new State($this->name, State::TYPE_FINAL, $this->properties);
     }
 
-    public function setName(string $name): StateBuilderInterface
+    public function setName(string $name): StateBuilder
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function setProperties(PropertyCollection $properties = null): StateBuilderInterface
+    public function setProperties(PropertyCollection $properties = null): StateBuilder
     {
         $this->properties = $properties;
 

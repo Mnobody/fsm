@@ -4,20 +4,19 @@ namespace Fsm;
 
 use Fsm\Machine\State\State;
 use Fsm\Exception\FsmException;
-use Fsm\Machine\StatefulInterface;
+use Fsm\Machine\Stateful\StatefulInterface;
 use Fsm\Builder\State\StateBuilder;
 use Fsm\Builder\StateMachineBuilder;
-use Fsm\Machine\State\StateInterface;
-use Fsm\Machine\StateMachineInterface;
+use Fsm\Machine\StateMachine;
 use Fsm\Builder\Transition\TransitionBuilder;
 use Fsm\Collection\Property\PropertyCollection;
-use Fsm\Machine\Transition\TransitionInterface;
+use Fsm\Machine\Transition\Transition;
 use Fsm\Machine\Transition\Guard\GuardInterface;
 use Fsm\Machine\Transition\Callback\CallbackInterface;
 
 final class Facade
 {
-    public function state(string $type, string $name, PropertyCollection $properties = null): StateInterface
+    public function state(string $type, string $name, PropertyCollection $properties = null): State
     {
         $builder = (new StateBuilder)
             ->setName($name)
@@ -35,7 +34,7 @@ final class Facade
         }
     }
 
-    public function transition(string $name, string $from, string $to, GuardInterface $guard = null, CallbackInterface $callback = null): TransitionInterface
+    public function transition(string $name, string $from, string $to, GuardInterface $guard = null, CallbackInterface $callback = null): Transition
     {
         return (new TransitionBuilder)
             ->setName($name)
@@ -46,7 +45,7 @@ final class Facade
             ->build();
     }
 
-    public function machine(StatefulInterface $stateful, array $states, array $transitions): StateMachineInterface
+    public function machine(StatefulInterface $stateful, array $states, array $transitions): StateMachine
     {
         $builder = (new StateMachineBuilder)->setStateful($stateful);
 

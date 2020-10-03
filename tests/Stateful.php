@@ -2,14 +2,14 @@
 
 namespace Tests;
 
-use Fsm\Machine\State\StateInterface;
-use Fsm\Machine\StatefulInterface;
+use Fsm\Machine\State\State;
+use Fsm\Machine\Stateful\StatefulInterface;
 
 class Stateful implements StatefulInterface
 {
-    private StateInterface $state;
+    private State $state;
 
-    public function setState(StateInterface $state)
+    public function setState(State $state)
     {
         $this->state = $state;
     }
@@ -19,7 +19,7 @@ class Stateful implements StatefulInterface
         return isset($this->state);
     }
 
-    public function getState(): StateInterface
+    public function getState(): State
     {
         return $this->state;
     }

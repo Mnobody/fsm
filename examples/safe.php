@@ -10,17 +10,15 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Fsm\Facade;
 use Fsm\Machine\State\State;
-use Fsm\Machine\StatefulInterface;
-use Fsm\Machine\State\StateInterface;
+use Fsm\Machine\Stateful\StatefulInterface;
 use Fsm\Collection\Argument\ArgumentCollection;
 use Fsm\Machine\Transition\Guard\GuardInterface;
-use Fsm\Collection\Argument\ArgumentCollectionInterface;
 
 class Safe implements StatefulInterface
 {
-    private StateInterface $state;
+    private State $state;
 
-    public function setState(StateInterface $state)
+    public function setState(State $state)
     {
         $this->state = $state;
     }
@@ -30,7 +28,7 @@ class Safe implements StatefulInterface
         return isset($this->state);
     }
 
-    public function getState(): StateInterface
+    public function getState(): State
     {
         return $this->state;
     }
@@ -43,7 +41,7 @@ class Safe implements StatefulInterface
 
 class CombinationChecker implements GuardInterface
 {
-    public function pass(StatefulInterface $stateful, StateInterface $state, string $to, ArgumentCollectionInterface $arguments = null): bool
+    public function pass(StatefulInterface $stateful, State $state, string $to, ArgumentCollection $arguments = null): bool
     {
         $attempt = $arguments->getArgument('combination');
 

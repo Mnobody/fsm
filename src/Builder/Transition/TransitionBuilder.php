@@ -3,11 +3,10 @@
 namespace Fsm\Builder\Transition;
 
 use Fsm\Machine\Transition\Transition;
-use Fsm\Machine\Transition\TransitionInterface;
 use Fsm\Machine\Transition\Guard\GuardInterface;
 use Fsm\Machine\Transition\Callback\CallbackInterface;
 
-final class TransitionBuilder implements TransitionBuilderInterface
+final class TransitionBuilder
 {
     private string $name;
 
@@ -19,42 +18,42 @@ final class TransitionBuilder implements TransitionBuilderInterface
 
     private ?CallbackInterface $callback = null;
 
-    public function setName(string $name): TransitionBuilderInterface
+    public function setName(string $name): TransitionBuilder
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function setFrom(string $from): TransitionBuilderInterface
+    public function setFrom(string $from): TransitionBuilder
     {
         $this->from = $from;
 
         return $this;
     }
 
-    public function setTo(string $to): TransitionBuilderInterface
+    public function setTo(string $to): TransitionBuilder
     {
         $this->to = $to;
 
         return $this;
     }
 
-    public function setGuard(GuardInterface $guard = null): TransitionBuilderInterface
+    public function setGuard(GuardInterface $guard = null): TransitionBuilder
     {
         $this->guard = $guard;
 
         return $this;
     }
 
-    public function setCallback(CallbackInterface $callback = null): TransitionBuilderInterface
+    public function setCallback(CallbackInterface $callback = null): TransitionBuilder
     {
         $this->callback = $callback;
 
         return $this;
     }
 
-    public function build(): TransitionInterface
+    public function build(): Transition
     {
         return new Transition($this->name, $this->from, $this->to, $this->guard, $this->callback);
     }
